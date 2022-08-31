@@ -1,0 +1,23 @@
+﻿FILE(GLOB_RECURSE SOURCES "*.cpp")
+FILE(GLOB_RECURSE HEADERS "*.h" "*.hpp")
+file(GLOB_RECURSE QMLFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.qml")
+
+set(MODLULE_NAME Core)
+
+#qt_add_library(${MODLULE_NAME} STATIC ${HEADERS} ${SOURCES})
+
+qt_add_qml_module(${MODLULE_NAME}
+    URI ${MODLULE_NAME}
+    VERSION 1.0
+    STATIC
+    SOURCES ${HEADERS} ${SOURCES}
+    QML_FILES ${QMLFILES}
+    PLUGIN_TARGET ${MODLULE_NAME}Plugin
+#    RESOURCES qmldir
+    OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY}/${MODLULE_NAME}
+)
+
+target_compile_definitions(${MODLULE_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
+target_link_libraries(${MODLULE_NAME} PRIVATE ${QtModules})
+set_target_properties(${MODLULE_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
+target_include_directories(${MODLULE_NAME} PUBLIC .)
